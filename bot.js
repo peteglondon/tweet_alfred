@@ -1,5 +1,7 @@
 var Twit = require('twit')
 
+
+
 var T = new Twit({
     consumer_key:         'fho8yfZXR04uZCh71ggmAw6Ms'
   , consumer_secret:      '7ermDjw7gTjOb2iPv8TRmkgdKgsGzbMLOnnbdIW41xWW8gTxxz'
@@ -7,12 +9,41 @@ var T = new Twit({
   , access_token_secret:  'LeFCsVoXQ0Sy7v3URFXJFF055HJQQqp7sHrhg2kJRfMqW'
 });
 
-var stream = T.stream('user')
+var stream = T.stream('user');
+
+var Client = require('node-rest-client').Client;
+ 
+var client = new Client();
+
+
+var tweetUser = function (name, message){
+	var message = '@' + name + ' ' + message;
+	console.log('Sending : ' + message);
+	T.post('statuses/update', { status:  message}, function(err, data, response) {
+		if (err){
+			console.log('error: ' + err);
+	  		console.log('data : ' + data);
+	  	}
+	})
+};
+
 
 stream.on('tweet', function (tweet) {
 	try{
-	    tweetUser(tweet.user.screen_name, 
-	  	getReply(tweet.text))
+	    if (tweet.user.screen_name === 'tweet_alfred'){ return;}
+	    var args = {
+			  data: { message: tweet.text.replace('@tweet_alfred', '').trim(),
+			  twitterId: tweet.user.id },
+			  headers:{
+			  	"Content-Type": "application/json",
+			  	"Accept": "application/json"
+			  } 
+			};
+		console.log(args)
+		client.post("http://askalfred.herokuapp.com/messages", args, function(data, response){
+			var parsedData = JSON.parse(data);
+		 	tweetUser(tweet.user.screen_name, parsedData.text);
+		})
 	}
 	catch(err){
 		console.log('Error : ' + err);
