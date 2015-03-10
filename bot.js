@@ -42,7 +42,7 @@ stream.on('tweet', function (tweet) {
 		console.log(args)
 		client.post("http://askalfred.herokuapp.com/messages", args, function(data, response){
 			var parsedData = JSON.parse(data);
-		 	tweetUser(tweet.user.screen_name, parsedData.text);
+		 	tweetUser(tweet.user.screen_name, parsedData.text + ' http://bit.do/askalfred?twitterId=' tweet.user.id);
 		})
 	}
 	catch(err){
