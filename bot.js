@@ -44,7 +44,7 @@ stream.on('tweet', function (tweet) {
 			console.log('handling response');
 			console.log(data)
 			var parsedData = JSON.parse(data);
-		 	tweetUser(tweet.user.screen_name, parsedData.text + ' http://askalfred.herokuapp.com');
+		 	tweetUser(tweet.user.screen_name, parsedData.text + ' http://askalfred.herokuapp.com?twitterId=' + tweet.user.id);
 		})
 	}
 	catch(err){
