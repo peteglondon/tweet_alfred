@@ -31,18 +31,20 @@ var tweetUser = function (name, message){
 stream.on('tweet', function (tweet) {
 	try{
 	    if (tweet.user.screen_name === 'tweet_alfred'){ return;}
+	    console.log(tweet.text);
 	    var args = {
-			  data: { message: tweet.text.replace('@tweet_alfred', '').trim(),
+			  data: { text: tweet.text.replace('@tweet_alfred', '').trim(),
 			  twitterId: tweet.user.id },
 			  headers:{
-			  	"Content-Type": "application/json",
-			  	"Accept": "application/json"
+			  	"Content-Type": "application/json"
 			  } 
 			};
 		console.log(args)
 		client.post("http://askalfred.herokuapp.com/messages", args, function(data, response){
+			console.log('handling response');
+			console.log(data)
 			var parsedData = JSON.parse(data);
-		 	tweetUser(tweet.user.screen_name, parsedData.text + ' http://bit.do/askalfred?twitterId=' + tweet.user.id);
+		 	tweetUser(tweet.user.screen_name, parsedData.text + ' http://askalfred.herokuapp.com');
 		})
 	}
 	catch(err){
